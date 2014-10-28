@@ -1,7 +1,8 @@
 /*
- * PCD8544 - Interface with Philips PCD8544 (or compatible) LCDs.
+ * PCD8544 - Interface the Adafruit Trinket 3.3V with Philips PCD8544 (or compatible) LCDs.
  *
  * Copyright (c) 2010 Carlos Rodrigues <cefrodrigues@gmail.com>
+ * Copyright (c) 2014 Christian Roring <degrotebozewolf@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,20 +24,24 @@
  */
 
 /*
- * To use this sketch, connect the eight pins from your LCD like thus:
+ * This sketch was created for the 3.3V Trinket
  *
- * Pin 1 -> +3.3V (rightmost, when facing the display head-on)
- * Pin 2 -> Arduino digital pin 3
- * Pin 3 -> Arduino digital pin 4
- * Pin 4 -> Arduino digital pin 5
- * Pin 5 -> Arduino digital pin 7
- * Pin 6 -> Ground
- * Pin 7 -> 10uF capacitor -> Ground
- * Pin 8 -> Arduino digital pin 6
+ * To use this sketch, connect the Trinket to the display like this:
  *
- * Since these LCDs are +3.3V devices, you have to add extra components to
- * connect it to the digital pins of the Arduino (not necessary if you are
- * using a 3.3V variant of the Arduino, such as Sparkfun's Arduino Pro).
+ * Vcc  -> +3V
+ * Gnd  -> GND
+ * SCE  -> GND
+ * RST  -> Trinket digital pin #3
+ * DC   -> Trinkel digital pin #1
+ * DN   -> Trinkel digital pin #0
+ * SCLK -> Trinkel digital pin #2
+ */
+
+/*
+ * !! VERY IMPORTANT !!
+ *
+ * Because the Trinket uses pin #3 and #4 for uploading sketches through USB,
+ * disconnect pin #3 and #4 before uploading your sketches.
  */
 
 
