@@ -32,9 +32,9 @@
  * Gnd  -> GND
  * SCE  -> GND
  * RST  -> Trinket digital pin #3
- * DC   -> Trinkel digital pin #1
- * DN   -> Trinkel digital pin #0
- * SCLK -> Trinkel digital pin #2
+ * DC   -> Trinket digital pin #1
+ * DN   -> Trinket digital pin #0
+ * SCLK -> Trinket digital pin #2
  */
 
 /*
