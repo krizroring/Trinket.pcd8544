@@ -2,6 +2,7 @@
  * PCD8544 - Interface with Philips PCD8544 (or compatible) LCDs.
  *
  * Copyright (c) 2010 Carlos Rodrigues <cefrodrigues@gmail.com>
+ * Copyright (c) 2014 Christian Roring <degrotebozewolf@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,11 +26,7 @@
 
 #include "PCD8544.h"
 
-#if ARDUINO < 100
-#include <WProgram.h>
-#else
 #include <Arduino.h>
-#endif
 
 #include <avr/pgmspace.h>
 
@@ -46,13 +43,11 @@
 
 
 PCD8544::PCD8544(unsigned char sclk, unsigned char sdin,
-                 unsigned char dc, unsigned char reset,
-                 unsigned char sce):
+                 unsigned char dc, unsigned char reset):
     pin_sclk(sclk),
     pin_sdin(sdin),
     pin_dc(dc),
-    pin_reset(reset),
-    pin_sce(sce)
+    pin_reset(reset)
 {}
 
 
@@ -67,30 +62,23 @@ void PCD8544::begin(unsigned char width, unsigned char height, unsigned char mod
     // Sanitize the custom glyphs...
     memset(this->custom, 0, sizeof(this->custom));
 
-    // All pins are outputs (these displays cannot be read)...
+    //All pins are outputs (these displays cannot be read)...
     pinMode(this->pin_sclk, OUTPUT);
     pinMode(this->pin_sdin, OUTPUT);
     pinMode(this->pin_dc, OUTPUT);
     pinMode(this->pin_reset, OUTPUT);
-    pinMode(this->pin_sce, OUTPUT);
 
     // Reset the controller state...
     digitalWrite(this->pin_reset, HIGH);
-    digitalWrite(this->pin_sce, HIGH);
     digitalWrite(this->pin_reset, LOW);
-    delay(100);  
+    delay(100);
     digitalWrite(this->pin_reset, HIGH);
 
     // Set the LCD parameters...
     this->send(PCD8544_CMD, 0x21);  // extended instruction set control (H=1)
     this->send(PCD8544_CMD, 0x13);  // bias system (1:48)
 
-    if (model == CHIP_ST7576) {
-        this->send(PCD8544_CMD, 0xe0);  // higher Vop, too faint at default
-        this->send(PCD8544_CMD, 0x05);  // partial display mode
-    } else {
-        this->send(PCD8544_CMD, 0xc2);  // default Vop (3.06 + 66 * 0.06 = 7V)
-    }
+    this->send(PCD8544_CMD, 0xc2);  // default Vop (3.06 + 66 * 0.06 = 7V)
 
     this->send(PCD8544_CMD, 0x20);  // extended instruction set control (H=0)
     this->send(PCD8544_CMD, 0x09);  // all display segments on
@@ -190,20 +178,12 @@ void PCD8544::createChar(unsigned char chr, const unsigned char *glyph)
     this->custom[chr] = glyph;
 }
 
-
-#if ARDUINO < 100
-void PCD8544::write(uint8_t chr)
-#else
 size_t PCD8544::write(uint8_t chr)
-#endif
+
 {
     // ASCII 7-bit only...
     if (chr >= 0x80) {
-#if ARDUINO < 100
-        return;
-#else
         return 0;
-#endif
     }
 
     const unsigned char *glyph;
@@ -239,9 +219,7 @@ size_t PCD8544::write(uint8_t chr)
         this->line = (this->line + 1) % (this->height/9 + 1);
     }
 
-#if ARDUINO >= 100
     return 1;
-#endif
 }
 
 
@@ -310,9 +288,7 @@ void PCD8544::send(unsigned char type, unsigned char data)
 {
     digitalWrite(this->pin_dc, type);
   
-    digitalWrite(this->pin_sce, LOW);
     shiftOut(this->pin_sdin, this->pin_sclk, MSBFIRST, data);
-    digitalWrite(this->pin_sce, HIGH);
 }
 
 
