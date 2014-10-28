@@ -2,6 +2,7 @@
  * PCD8544 - Interface with Philips PCD8544 (or compatible) LCDs.
  *
  * Copyright (c) 2010 Carlos Rodrigues <cefrodrigues@gmail.com>
+ * Copyright (c) 2014 Christian Roring <degrotebozewolf@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,27 +28,20 @@
 #define PCD8544_H
 
 
-#if ARDUINO < 100
-#include <WProgram.h>
-#else
 #include <Arduino.h>
-#endif
-
 
 // Chip variants supported...
 #define CHIP_PCD8544 0
-#define CHIP_ST7576  1
-
 
 class PCD8544: public Print {
     public:
-        // All the pins can be changed from the default values...
-        PCD8544(unsigned char sclk  = 3,   /* clock       (display pin 2) */
-                unsigned char sdin  = 4,   /* data-in     (display pin 3) */
-                unsigned char dc    = 5,   /* data select (display pin 4) */
-                unsigned char reset = 6,   /* reset       (display pin 8) */
-                unsigned char sce   = 7);  /* enable      (display pin 5) */
+        PCD8544(unsigned char sclk  = 2,    /* clock        */
+            unsigned char sdin  = 0,        /* data-in      */
+            unsigned char dc    = 1,        /* data select  */
+            unsigned char reset = 3);       /* enable       */
 
+        // All the pins can be changed from the default values...
+    
         // Display initialization (dimensions in pixels)...
         void begin(unsigned char width=84, unsigned char height=48, unsigned char model=CHIP_PCD8544);
         void stop();
@@ -76,11 +70,7 @@ class PCD8544: public Print {
         void createChar(unsigned char chr, const unsigned char *glyph);
 
         // Write an ASCII character at the current cursor position (7-bit)...
-#if ARDUINO < 100
-        virtual void write(uint8_t chr);
-#else        
         virtual size_t write(uint8_t chr);
-#endif
 
         // Draw a bitmap at the current cursor position...
         void drawBitmap(const unsigned char *data, unsigned char columns, unsigned char lines);
@@ -93,7 +83,7 @@ class PCD8544: public Print {
         unsigned char pin_sdin;
         unsigned char pin_dc;
         unsigned char pin_reset;
-        unsigned char pin_sce;
+
 
         // The size of the display, in pixels...
         unsigned char width;
@@ -112,6 +102,3 @@ class PCD8544: public Print {
 
 
 #endif  /* PCD8544_H */
-
-
-/* vim: set expandtab ts=4 sw=4: */
